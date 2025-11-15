@@ -13,6 +13,72 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <style>
+        .carousel {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+        }
+        
+        .carousel-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .carousel-indicator.active {
+            background-color: white;
+        }
+        
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .carousel-control:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .carousel-control.prev {
+            left: 1rem;
+        }
+        
+        .carousel-control.next {
+            right: 1rem;
+        }
+    </style>
 </head>
 
 <body class="bg-white">
@@ -42,6 +108,37 @@
             <p class="text-xl mb-8">探索无限可能，创造你的传奇</p>
             <a href="#features"
                 class="!rounded-button bg-primary text-white px-8 py-3 text-lg whitespace-nowrap">开启冒险</a>
+        </div>
+    </section>
+
+    <!-- 新增轮播图区域 -->
+    <section class="py-12 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">服务器建筑展示</h2>
+            <div class="carousel w-full h-[400px] md:h-[500px] rounded-xl shadow-lg">
+                <div class="carousel-track h-full">
+                    <div class="carousel-slide">
+                        <img src="./img/slide1.png" alt="服务器风景" class="w-full h-full object-cover">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="./img/slide2.png" alt="玩家建筑" class="w-full h-full object-cover">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="./img/slide3.png" alt="活动现场" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <button class="carousel-control prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-control next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-indicators">
+                    <button class="carousel-indicator active" data-index="0"></button>
+                    <button class="carousel-indicator" data-index="1"></button>
+                    <button class="carousel-indicator" data-index="2"></button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -209,7 +306,7 @@
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-lg">
                     <h3 class="text-xl font-bold mb-2">遇到问题如何寻求帮助？</h3>
-                    <p class="text-gray-600">加腐竹wx(wx15702497610),进群咨询。</p>
+                    <p class="text-gray-600">加腐竹wx(wx15702497610)或管理员wx(B-16772),进群咨询。</p>
                 </div>
             </div>
         </div>
@@ -234,7 +331,7 @@
                     <h4 class="text-lg font-bold mb-4">联系我们</h4>
                     <ul class="space-y-2">
                         <li class="text-gray-400">腐竹wx：wx15702497610</li>
-                        <li class="text-gray-400">邮箱：1602128939@qq.com</li>
+                        <li class="text-gray-400">管理员wx：B-16772</li>
                     </ul>
                 </div>
                 <div>
@@ -262,8 +359,70 @@
         class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center opacity-0 transition-opacity duration-300">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <script>
+        // 轮播图功能实现
+        document.addEventListener('DOMContentLoaded', function() {
+            const track = document.querySelector('.carousel-track');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            const prevBtn = document.querySelector('.carousel-control.prev');
+            const nextBtn = document.querySelector('.carousel-control.next');
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            // 更新轮播位置
+            function updateCarousel() {
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // 更新指示器状态
+                indicators.forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+
+            // 下一张
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateCarousel();
+            }
+
+            // 上一张
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateCarousel();
+            }
+
+            // 点击指示器切换
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', () => {
+                    currentIndex = parseInt(indicator.dataset.index);
+                    updateCarousel();
+                });
+            });
+
+            // 按钮事件
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            // 自动轮播
+            let autoplay = setInterval(nextSlide, 5000);
+
+            // 鼠标悬停暂停自动轮播
+            const carousel = document.querySelector('.carousel');
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(autoplay);
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                autoplay = setInterval(nextSlide, 5000);
+            });
+        });
+    </script>
 </body>
 
-
 </html>
-
